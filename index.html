@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📌 Auto-populate Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #510C76; /* EAC Purple */
+        }
+        .bookmarklet {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #81BC41; /* EAC Green */
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .bookmarklet:hover {
+            background: #6fa032;
+        }
+        .tip {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📌 Auto-populate Attendance</h2>
+
+    <p>If you're marking attendance and want to **automatically fill in all blank dropdowns with "P" (Present)**, follow these steps.</p>
+
+    <h3>Step 1: Add the Bookmarklet</h3>
+    <p><strong>Drag the button below to your bookmarks bar:</strong></p>
+    
+    <p>
+        <a href="javascript:(function(){document.querySelectorAll('table#_ctl0_PlaceHolderMain_gridSS select').forEach(select => { if (select.value === '') { select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); } });})()" class="bookmarklet" onclick="alert('Drag this button to your bookmarks bar!'); return false;">
+            📌 Auto-populate Attendance
+        </a>
+    </p>
+
+    <h3>Step 2: Use the Bookmarklet</h3>
+    <ol>
+        <li>Go to the online attendance page in the Faculty Portal.</li>
+        <li>Click **"📌 Auto-populate Attendance"** in your bookmarks bar.</li>
+        <li>All blank attendance dropdowns will automatically be set to **"P" (Present).**</li>
+    </ol>
+
+    <h3>Troubleshooting</h3>
+    <ul>
+        <li><strong>Can't see your bookmarks bar?</strong> Press <strong>Ctrl + Shift + B</strong> (Windows) or <strong>Cmd + Shift + B</strong> (Mac) to show it.</li>
+        <li>This only updates blank dropdowns—it won’t change existing selections.</li>
+        <li>If it doesn’t work, refresh the page and try again.</li>
+    </ul>
+
+    <p class="tip">Need help? Contact the CTL for support.</p>
+
+</body>
+</html>
