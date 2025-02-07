@@ -17,16 +17,21 @@
         .bookmarklet {
             display: inline-block;
             padding: 10px 15px;
-            background: #81BC41; /* EAC Green */
+            background: #510C76; /* EAC Purple */
             color: white;
             font-size: 16px;
             text-decoration: none;
             border-radius: 5px;
             font-weight: bold;
+            font-family: Arial, sans-serif;
             cursor: pointer;
         }
         .bookmarklet:hover {
-            background: #6fa032;
+            background: #3e0a5a;
+        }
+        ol, ul {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
         }
         .tip {
             font-size: 14px;
@@ -38,22 +43,30 @@
 
     <h2>📌 Auto-populate Attendance</h2>
 
-    <p>If you're marking attendance and want to **automatically fill in all blank dropdowns with "P" (Present)**, follow these steps.</p>
+    <p>If you're marking attendance and want to <strong>automatically fill in all blank dropdowns with "P" (Present)</strong>, follow these steps.</p>
 
     <h3>Step 1: Add the Bookmarklet</h3>
     <p><strong>Drag the button below to your bookmarks bar:</strong></p>
-    
+
     <p>
-        <a href="javascript:(function(){document.querySelectorAll('table#_ctl0_PlaceHolderMain_gridSS select').forEach(select => { if (select.value === '') { select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); } });})()" class="bookmarklet" onclick="alert('Drag this button to your bookmarks bar!'); return false;">
+        <a href="javascript:(function(){document.querySelectorAll('table#_ctl0_PlaceHolderMain_gridSS select').forEach(select => { if (select.value === '') { select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); } });})()" 
+           class="bookmarklet" 
+           onclick="alert('Drag this button to your bookmarks bar!'); return false;">
             📌 Auto-populate Attendance
         </a>
     </p>
 
     <h3>Step 2: Use the Bookmarklet</h3>
+    <p>Once your bookmarklet is saved, follow these steps to mark attendance:</p>
     <ol>
-        <li>Go to the online attendance page in the Faculty Portal.</li>
-        <li>Click **"📌 Auto-populate Attendance"** in your bookmarks bar.</li>
-        <li>All blank attendance dropdowns will automatically be set to **"P" (Present).**</li>
+        <li>Go to the <strong>Faculty Portal</strong> and click on <strong>My Classes</strong>.</li>
+        <li>Open the <strong>Grade Book</strong> for the class where you want to mark attendance.</li>
+        <li>Enter any time in the <strong>Time</strong> field.</li>
+        <li>Enter a <strong>Duration</strong> (e.g., 60 minutes).</li>
+        <li>Click on the <strong>day of the week</strong> for which you want to take attendance.</li>
+        <li>Click your <strong>Auto-populate Attendance</strong> bookmark to set all blank fields to <strong>P (Present)</strong>.</li>
+        <li>For students who were <strong>Absent (A)</strong> or <strong>Excused (E)</strong>, manually change their dropdown selection.</li>
+        <li>Click <strong>Update</strong> to save the attendance record.</li>
     </ol>
 
     <h3>Troubleshooting</h3>
