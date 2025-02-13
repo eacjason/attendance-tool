@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📌 Auto-populate Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+        h2 {
+            color: #510C76; /* EAC Purple */
+        }
+        .bookmarklet {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #510C76; /* EAC Purple */
+            color: white;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+        }
+        .bookmarklet:hover {
+            background: #3e0a5a;
+        }
+        ol, ul {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .tip {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+
+    <p>
+        <a href="javascript:(function(){document.querySelectorAll('table#_ctl0_PlaceHolderMain_gridSS select').forEach(select => { if (select.value === '') { select.value = '1'; select.dispatchEvent(new Event('change', { bubbles: true })); } });})()" 
+           class="bookmarklet" 
+           onclick="alert('Drag this button to your bookmarks bar!'); return false;">
+            📌 Auto-populate Attendance
+        </a>
+    </p>
+    
+
+</body>
+</html>
