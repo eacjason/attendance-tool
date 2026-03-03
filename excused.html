@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Faculty Portal Plus | Excused Absences (Prototype)</title>
+  <style>
+    :root {
+      --card: #ffffff;
+      --text: #1f2328;
+      --muted: #6b7280;
+      --border: #d7dbe2;
+      --header: #5f666f;
+      --headerText: #ffffff;
+      --btn: #50565f;
+      --btnText: #ffffff;
+      --pillActive: #f4e2b0;
+      --shadow: 0 1px 0 rgba(16, 24, 40, 0.04);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color: var(--text);
+      background: #ffffff;
+    }
+
+    /* Header (closer to Attendance page) */
+    .header-wrap {
+      padding: 18px;
+      background: #ffffff;
+    }
+
+    .backrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .backpill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .backpill:hover { background: #f6f7f9; }
+
+    .ico {
+      width: 18px;
+      height: 18px;
+      display: inline-block;
+      position: relative;
+    }
+
+    .ico.back:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      border: 2px solid #2b2f36;
+      opacity: 0.9;
+    }
+    .ico.back:after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 5px;
+      width: 6px;
+      height: 6px;
+      border-left: 2px solid #2b2f36;
+      border-bottom: 2px solid #2b2f36;
+      transform: rotate(45deg);
+    }
+
+    .ico.book {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #2b2f36;
+      border-radius: 3px;
+    }
+    .ico.book:after {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 8px;
+      height: 2px;
+      background: #2b2f36;
+      box-shadow: 0 4px 0 #2b2f36, 0 8px 0 #2b2f36;
+      opacity: 0.35;
+    }
+
+    .bar {
+      background: var(--header);
+      color: var(--headerText);
+      border-radius: 4px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .clipboard {
+      width: 22px;
+      height: 22px;
+      border: 2px solid rgba(255,255,255,0.9);
+      border-radius: 4px;
+      position: relative;
+      background: transparent;
+      opacity: 0.95;
+      flex: 0 0 auto;
+    }
+    .clipboard:before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 5px;
+      width: 10px;
+      height: 8px;
+      border: 2px solid rgba(255,255,255,0.9);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      background: transparent;
+    }
+    .clipboard:after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 9px;
+      width: 12px;
+      height: 2px;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 5px 0 rgba(255,255,255,0.85);
+      opacity: 0.85;
+    }
+
+    .course-line {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    /* Content area */
+    .course-wrap {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 0 14px;
+      flex-wrap: wrap;
+    }
+
+    .pillset {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .pill {
+      padding: 10px 16px;
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 18px;
+      user-select: none;
+    }
+    .pill:last-child { border-right: none; }
+    .pill.active { background: var(--pillActive); }
+
+    .datebox {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+      height: 44px;
+    }
+    .datebox label {
+      padding: 0 12px;
+      color: #374151;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-right: 1px solid var(--border);
+      height: 100%;
+      background: #eef0f3;
+      white-space: nowrap;
+    }
+    .datebox input {
+      border: none;
+      outline: none;
+      font-size: 16px;
+      padding: 0 12px;
+      height: 100%;
+      min-width: 160px;
+      background: #ffffff;
+    }
+
+    .filterbtn {
+      border: 1px solid #3f4650;
+      background: var(--btn);
+      color: var(--btnText);
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 44px;
+    }
+    .filterbtn:hover { filter: brightness(1.05); }
+
+    .subtle {
+      color: var(--muted);
+      font-size: 18px;
+      margin: 6px 0 12px;
+    }
+
+    /* Table */
+    .table-wrap {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      font-size: 18px;
+      padding: 14px 16px;
+      background: #f3f4f6;
+      border-bottom: 1px solid var(--border);
+      color: #111827;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      font-size: 18px;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .student {
+      font-weight: 700;
+    }
+    .student-id {
+      color: var(--muted);
+      font-size: 16px;
+      margin-top: 4px;
+    }
+
+    .group-row td {
+      background: #f7f2e2;
+      color: #2f3135;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+    }
+
+    /* Accordion (All term) */
+    .accordion-wrap {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    details.acc {
+      border-bottom: 1px solid var(--border);
+    }
+    details.acc:last-child { border-bottom: none; }
+
+    details.acc > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 18px;
+      user-select: none;
+    }
+
+    details.acc > summary::-webkit-details-marker { display: none; }
+
+    .acc-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .chev {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid #374151;
+      border-bottom: 2px solid #374151;
+      transform: rotate(-45deg);
+      transition: transform 120ms ease;
+      flex: 0 0 auto;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    details.acc[open] .chev { transform: rotate(45deg); }
+
+    .acc-title {
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .acc-meta {
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .acc-body {
+      padding: 0;
+      background: #ffffff;
+    }
+
+    .acc-body table thead th {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .acc-body table tbody td {
+      font-size: 18px;
+    }
+
+    .acc-body thead th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    @media (max-width: 980px) {
+      thead th, tbody td { font-size: 16px; }
+      .datebox input { min-width: 140px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header-wrap">
+    <div class="backrow">
+      <button class="backpill" id="backBtn" type="button">
+        <span class="ico back" aria-hidden="true"></span>
+        <span class="ico book" aria-hidden="true" style="margin-left:4px"></span>
+        <span>Class(es)</span>
+      </button>
+    </div>
+
+    <div class="bar" role="banner" aria-label="Page title">
+      <span class="clipboard" aria-hidden="true"></span>
+      <span>Excused Absences</span>
+      <span id="countText" style="opacity:0.9; font-weight: 500;">(0)</span>
+    </div>
+
+    <div class="course-line">BIO160 - Introduction to Human Anatomy and Physiology (Section: S1006)</div>
+
+    <div class="course-wrap">
+      <div class="content">
+        <div class="filters" aria-label="Filters">
+          <div class="pillset" role="tablist" aria-label="Quick ranges">
+            <div class="pill active" role="tab" aria-selected="true" data-range="today">Today</div>
+            <div class="pill" role="tab" aria-selected="false" data-range="prev7">Previous 7 days</div>
+            <div class="pill" role="tab" aria-selected="false" data-range="next7">Next 7 days</div>
+            <div class="pill" role="tab" aria-selected="false" data-range="next30">Next 30 days</div>
+            <div class="pill" role="tab" aria-selected="false" data-range="all">All term</div>
+          </div>
+
+          <div class="datebox" title="Optional custom date range">
+            <label for="startDate">📅 Start date</label>
+            <input id="startDate" type="date" />
+          </div>
+
+          <div class="datebox" title="Optional custom date range">
+            <label for="endDate">📅 End date</label>
+            <input id="endDate" type="date" />
+          </div>
+
+          <button class="filterbtn" id="applyBtn" title="Apply date filter">
+            <span aria-hidden="true">↻</span>
+            <span>Filter</span>
+          </button>
+        </div>
+
+        <div class="subtle" id="summaryText">Showing 0 excused absences</div>
+
+        <div class="table-wrap" id="tableWrap">
+          <table aria-label="Excused absences">
+            <thead>
+              <tr>
+                <th style="width: 34%">Student</th>
+                <th style="width: 16%" id="dateHeader">Date ▲</th>
+                <th style="width: 24%">Reason</th>
+                <th style="width: 26%">Notes</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div class="empty" id="emptyState" style="display:none;">No excused absences match the selected filter.</div>
+        </div>
+
+        <div class="accordion-wrap" id="accordionWrap" style="display:none;" aria-label="Accordion by date"></div>
+
+        <div class="footer-note">Need to make changes? Please contact the appropriate department or administrator.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data (prototype)
+    // One row per student per date. No date ranges.
+
+    const term = {
+      name: "Spring 2026",
+      start: "2026-01-12",
+      end: "2026-05-08"
+    };
+
+    const absences = [
+      // Baseball travel block (individual dates)
+      { studentLast: "Johnson", studentFirst: "Alex", studentId: "324567", date: "2026-04-26", reason: "Baseball", notes: "Away game (Denver)" },
+      { studentLast: "Johnson", studentFirst: "Alex", studentId: "324567", date: "2026-04-27", reason: "Baseball", notes: "Away game (Denver)" },
+      { studentLast: "Johnson", studentFirst: "Alex", studentId: "324567", date: "2026-04-28", reason: "Baseball", notes: "Away game (Denver)" },
+
+      // Choir competition
+      { studentLast: "Parker", studentFirst: "Emily", studentId: "298456", date: "2026-04-26", reason: "Choir Competition", notes: "Regional choir contest" },
+
+      // Band trip (individual dates)
+      { studentLast: "Rodriguez", studentFirst: "Michael", studentId: "310987", date: "2026-04-29", reason: "Band Trip", notes: "State band trip (Lincoln)" },
+      { studentLast: "Rodriguez", studentFirst: "Michael", studentId: "310987", date: "2026-04-30", reason: "Band Trip", notes: "State band trip (Lincoln)" },
+
+      // Soccer tournament (individual dates)
+      { studentLast: "Lewis", studentFirst: "Kaitlyn", studentId: "317608", date: "2026-04-27", reason: "Soccer", notes: "Tournament (Kansas City)" },
+      { studentLast: "Lewis", studentFirst: "Kaitlyn", studentId: "317608", date: "2026-04-28", reason: "Soccer", notes: "Tournament (Kansas City)" },
+      { studentLast: "Lewis", studentFirst: "Kaitlyn", studentId: "317608", date: "2026-04-29", reason: "Soccer", notes: "Tournament (Kansas City)" },
+
+      // Track meet
+      { studentLast: "Garcia", studentFirst: "Megan", studentId: "284190", date: "2026-04-05", reason: "Track Meet", notes: "Invitational" },
+
+      // A day with multiple reasons for one student (example)
+      { studentLast: "Bennett", studentFirst: "Joshua", studentId: "276512", date: "2026-03-22", reason: "Athletics", notes: "Team travel" },
+      { studentLast: "Bennett", studentFirst: "Joshua", studentId: "276512", date: "2026-03-22", reason: "Student Life", notes: "Required event" },
+
+      // Earlier in term
+      { studentLast: "Adams", studentFirst: "Spencer", studentId: "301241", date: "2026-03-02", reason: "Soccer", notes: "Away match" },
+      { studentLast: "Adams", studentFirst: "Spencer", studentId: "301241", date: "2026-03-08", reason: "Soccer", notes: "Away match" },
+
+      // Another student
+      { studentLast: "Clark", studentFirst: "Laura", studentId: "279036", date: "2026-03-23", reason: "Choir", notes: "Performance" }
+    ];
+
+    // Add lots of Basketball dates for a few students (to stress-test All term)
+    const addBasketballSchedule = (student, isoDates, notesPrefix) => {
+      for (const iso of isoDates) {
+        absences.push({
+          studentLast: student.last,
+          studentFirst: student.first,
+          studentId: student.id,
+          date: iso,
+          reason: "Basketball",
+          notes: notesPrefix
+        });
+      }
+    };
+
+    const BB = {
+      a: { last: "Nguyen", first: "Tara", id: "312004" },
+      b: { last: "Sanders", first: "Devin", id: "309771" },
+      c: { last: "Martinez", first: "Isabella", id: "295880" }
+    };
+
+    // Basketball schedule: lots of dates spread across the term
+    const bbDates = [
+      "2026-01-15","2026-01-20","2026-01-27",
+      "2026-02-03","2026-02-05","2026-02-10","2026-02-12","2026-02-17","2026-02-19","2026-02-24","2026-02-26",
+      "2026-03-03","2026-03-05","2026-03-10","2026-03-12","2026-03-17","2026-03-19","2026-03-24","2026-03-26",
+      "2026-04-02","2026-04-07","2026-04-09","2026-04-14","2026-04-16",
+      "2026-04-21","2026-04-23","2026-04-28","2026-04-30",
+      "2026-05-05"
+    ];
+
+    // Same team travel for most games, with one student missing a few (injury/eligibility, etc.)
+    addBasketballSchedule(BB.a, bbDates, "Team travel (Basketball)" );
+    addBasketballSchedule(BB.b, bbDates.filter(d => !["2026-02-05","2026-03-12","2026-04-16"].includes(d)), "Team travel (Basketball)" );
+    addBasketballSchedule(BB.c, bbDates.filter(d => !["2026-01-20","2026-02-26","2026-04-02","2026-04-30"].includes(d)), "Team travel (Basketball)" );
+
+    // Utilities
+    const toDate = (iso) => {
+      const [y, m, d] = iso.split("-").map(Number);
+      return new Date(y, m - 1, d, 12, 0, 0);
+    };
+
+    const fmtShort = (iso) => {
+      const dt = toDate(iso);
+      const month = dt.toLocaleString(undefined, { month: "short" });
+      const day = dt.getDate();
+      const dow = dt.toLocaleString(undefined, { weekday: "short" });
+      return `${month} ${day} (${dow})`;
+    };
+
+    const isBetweenInclusive = (iso, startIso, endIso) => {
+      const d = toDate(iso).getTime();
+      const s = toDate(startIso).getTime();
+      const e = toDate(endIso).getTime();
+      return d >= s && d <= e;
+    };
+
+    const addDays = (iso, days) => {
+      const d = toDate(iso);
+      d.setDate(d.getDate() + days);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${dd}`;
+    };
+
+    // State
+    const state = {
+      range: "today", // today | prev7 | next7 | next30 | all
+      start: "",
+      end: "",
+      // Stable demo date so the prototype always shows results.
+      // Swap to `new Date()` logic if you want this to always track the real date.
+      anchorToday: "2026-04-26"
+    };
+
+    const getRangeWindow = () => {
+      const base = state.anchorToday;
+      if (state.range === "today") return { start: base, end: base };
+      // Previous 7 days includes today: base-6 through base
+      if (state.range === "prev7") return { start: addDays(base, -6), end: base };
+      if (state.range === "next7") return { start: base, end: addDays(base, 6) };
+      if (state.range === "next30") return { start: base, end: addDays(base, 29) };
+      return { start: term.start, end: term.end };
+    };
+
+    const getActiveWindow = () => {
+      const hasCustom = state.start && state.end;
+      if (hasCustom) return { start: state.start, end: state.end };
+      return getRangeWindow();
+    };
+
+    const splitUpcomingPast = (rows, baseIso) => {
+      const base = toDate(baseIso).getTime();
+      const upcoming = [];
+      const past = [];
+      for (const r of rows) {
+        const t = toDate(r.date).getTime();
+        if (t >= base) upcoming.push(r);
+        else past.push(r);
+      }
+      return { upcoming, past };
+    };
+
+    // Render
+    const tbody = document.getElementById("tbody");
+    const emptyState = document.getElementById("emptyState");
+    const tableWrap = document.getElementById("tableWrap");
+    const accordionWrap = document.getElementById("accordionWrap");
+    const summaryText = document.getElementById("summaryText");
+    const countText = document.getElementById("countText");
+
+    const render = () => {
+      const window = getActiveWindow();
+
+      let rows = absences
+        .filter(a => isBetweenInclusive(a.date, window.start, window.end))
+        .slice();
+
+      rows.sort((a, b) => {
+        const da = toDate(a.date).getTime();
+        const db = toDate(b.date).getTime();
+        if (da !== db) return da - db;
+        const sa = `${a.studentLast}, ${a.studentFirst}`.toLowerCase();
+        const sb = `${b.studentLast}, ${b.studentFirst}`.toLowerCase();
+        return sa.localeCompare(sb);
+      });
+
+      const { upcoming, past } = splitUpcomingPast(rows, state.anchorToday);
+
+      const total = rows.length;
+      countText.textContent = `(${total})`;
+
+      const rangeLabel = (() => {
+        if (state.start && state.end) return `Custom (${state.start} to ${state.end})`;
+        if (state.range === "today") return "Today";
+        if (state.range === "prev7") return "Previous 7 days";
+        if (state.range === "next7") return "Next 7 days";
+        if (state.range === "next30") return "Next 30 days";
+        return "All term";
+      })();
+
+      summaryText.textContent = `Showing ${total} excused absence${total === 1 ? "" : "es"} (${rangeLabel})`;
+
+      // Decide rendering mode
+      const useAccordionByDate = (state.range === "all" || state.range === "next30") && !(state.start && state.end);
+
+      // Reset
+      tbody.innerHTML = "";
+      accordionWrap.innerHTML = "";
+      emptyState.style.display = "none";
+
+      tableWrap.style.display = useAccordionByDate ? "none" : "block";
+      accordionWrap.style.display = useAccordionByDate ? "block" : "none";
+
+      if (total === 0) {
+        if (useAccordionByDate) {
+          accordionWrap.innerHTML = `<div class="empty">No excused absences match the selected filter.</div>`;
+        } else {
+          emptyState.style.display = "block";
+        }
+        return;
+      }
+
+      const addGroupRow = (label) => {
+        const tr = document.createElement("tr");
+        tr.className = "group-row";
+        const td = document.createElement("td");
+        td.colSpan = 4;
+        td.textContent = label;
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      };
+
+      const addDataRow = (a) => {
+        const tr = document.createElement("tr");
+
+        const tdStudent = document.createElement("td");
+        tdStudent.innerHTML = `
+          <div class="student">${a.studentLast}, ${a.studentFirst}</div>
+          <div class="student-id">ID: ${a.studentId}</div>
+        `;
+
+        const tdDate = document.createElement("td");
+        tdDate.textContent = fmtShort(a.date);
+
+        const tdReason = document.createElement("td");
+        tdReason.textContent = a.reason;
+
+        const tdNotes = document.createElement("td");
+        tdNotes.textContent = a.notes || "";
+
+        tr.append(tdStudent, tdDate, tdReason, tdNotes);
+        tbody.appendChild(tr);
+      };
+
+      if (useAccordionByDate) {
+        // Group by date (one accordion section per date)
+        const byDate = new Map();
+        for (const r of rows) {
+          if (!byDate.has(r.date)) byDate.set(r.date, []);
+          byDate.get(r.date).push(r);
+        }
+
+        const dates = Array.from(byDate.keys()).sort((a, b) => toDate(a) - toDate(b));
+
+        // Build accordion
+        for (const iso of dates) {
+          const items = byDate.get(iso);
+
+          const details = document.createElement("details");
+          details.className = "acc";
+
+          // Open the anchorToday section by default, so the demo feels alive
+          if (iso === state.anchorToday) details.open = true;
+
+          const summary = document.createElement("summary");
+          summary.innerHTML = `
+            <div class="acc-left">
+              <span class="chev" aria-hidden="true"></span>
+              <span class="acc-title">${fmtShort(iso)}</span>
+            </div>
+            <span class="acc-meta">${items.length} excused</span>
+          `;
+
+          const body = document.createElement("div");
+          body.className = "acc-body";
+          body.innerHTML = `
+            <table aria-label="Excused absences on ${iso}">
+              <thead>
+                <tr>
+                  <th style="width: 40%">Student</th>
+                  <th style="width: 30%">Reason</th>
+                  <th style="width: 30%">Notes</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          `;
+
+          const innerTbody = body.querySelector("tbody");
+          // Sort within a date by student name
+          items
+            .slice()
+            .sort((a, b) => {
+              const sa = `${a.studentLast}, ${a.studentFirst}`.toLowerCase();
+              const sb = `${b.studentLast}, ${b.studentFirst}`.toLowerCase();
+              return sa.localeCompare(sb);
+            })
+            .forEach(a => {
+              const tr = document.createElement("tr");
+              const tdStudent = document.createElement("td");
+              tdStudent.innerHTML = `
+                <div class="student">${a.studentLast}, ${a.studentFirst}</div>
+                <div class="student-id">ID: ${a.studentId}</div>
+              `;
+              const tdReason = document.createElement("td");
+              tdReason.textContent = a.reason;
+              const tdNotes = document.createElement("td");
+              tdNotes.textContent = a.notes || "";
+              tr.append(tdStudent, tdReason, tdNotes);
+              innerTbody.appendChild(tr);
+            });
+
+          details.appendChild(summary);
+          details.appendChild(body);
+          accordionWrap.appendChild(details);
+        }
+
+        return;
+      }
+
+      // Non-accordion views: table behavior
+      // For Previous 7 days, do not split into Upcoming/Past. Everything is inherently in the past (or today).
+      if (state.range === "prev7") {
+        rows.forEach(addDataRow);
+        return;
+      }
+
+      const shouldGroup = state.range !== "today";
+
+      if (shouldGroup) {
+        if (upcoming.length) {
+          addGroupRow("Upcoming");
+          upcoming.forEach(addDataRow);
+        }
+        if (past.length) {
+          addGroupRow("Past");
+          past.forEach(addDataRow);
+        }
+      } else {
+        rows.forEach(addDataRow);
+      }
+    };
+
+    // UI wiring
+    const setActivePill = (range) => {
+      state.range = range;
+      state.start = "";
+      state.end = "";
+      document.getElementById("startDate").value = "";
+      document.getElementById("endDate").value = "";
+
+      document.querySelectorAll(".pill").forEach(p => {
+        const isActive = p.dataset.range === range;
+        p.classList.toggle("active", isActive);
+        p.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+      render();
+    };
+
+    document.querySelectorAll(".pill").forEach(p => {
+      p.addEventListener("click", () => setActivePill(p.dataset.range));
+    });
+
+    document.getElementById("applyBtn").addEventListener("click", () => {
+      const start = document.getElementById("startDate").value;
+      const end = document.getElementById("endDate").value;
+
+      if (start && end) {
+        state.start = start;
+        state.end = end;
+
+        document.querySelectorAll(".pill").forEach(p => {
+          p.classList.remove("active");
+          p.setAttribute("aria-selected", "false");
+        });
+        render();
+      } else {
+        render();
+      }
+    });
+
+    document.getElementById("backBtn").addEventListener("click", (e) => {
+      e.preventDefault();
+      alert("Prototype only: wire this to navigate back to the Classes list.");
+    });
+
+    // Quick sanity tests in console
+    // Quick sanity tests in console
+    // Expect: Today window is a single day.
+    console.assert(getRangeWindow().start === getRangeWindow().end, "Today should be a single day");
+
+    // Expect: Previous 7 days starts at -6 days and ends at today.
+    state.range = "prev7";
+    console.assert(getRangeWindow().start === addDays(state.anchorToday, -6), "Previous 7 days should start at -6 days");
+    console.assert(getRangeWindow().end === state.anchorToday, "Previous 7 days should end at today");
+
+    // Expect: Next 7 days end is 6 days after start.
+    state.range = "next7";
+    console.assert(getRangeWindow().end === addDays(state.anchorToday, 6), "Next 7 days should end at +6 days");
+
+    state.range = "today";
+
+    // Expect: We added a lot of Basketball rows.
+    const bbCount = absences.filter(a => a.reason === "Basketball").length;
+    console.assert(bbCount >= 60, "Basketball test data should be large (>= 60 rows)");
+
+    // Expect: All term groups by date should sum to the same total.
+    state.range = "all";
+    const w = getRangeWindow();
+    const allRows = absences.filter(a => isBetweenInclusive(a.date, w.start, w.end));
+    const byDateTest = allRows.reduce((m, r) => (m[r.date] = (m[r.date] || 0) + 1, m), {});
+    const sum = Object.values(byDateTest).reduce((a, b) => a + b, 0);
+    console.assert(sum === allRows.length, "Grouped-by-date sum should match All term row count");
+    state.range = "today";
+
+    render();
+  </script>
+</body>
+</html>
